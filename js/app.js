@@ -1,7 +1,6 @@
 window.onload = () => {
-    let stats;
 
-    let camera, controls, scene, parent, obj, cube, box, renderer;
+    let stats, camera, controls, scene, parent, obj, cube, box, renderer;
 
     let dy = 0.01;
     let dx = 0.02;
@@ -11,9 +10,11 @@ window.onload = () => {
 
     function init() {
 
+        // Kamera
         camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
         camera.position.z = 5.0;
 
+        // Ovládání
         controls = new THREE.TrackballControls(camera);
         controls.rotateSpeed = 4.0;
         controls.zoomSpeed = 1.2;
@@ -25,7 +26,7 @@ window.onload = () => {
         controls.keys = [65, 83, 68];
         controls.addEventListener("change", render);
 
-        // Create scene hierarchy
+        // Scene hierarchy
         scene = new THREE.Scene();
         parent = new THREE.Object3D();
         obj = new THREE.Object3D();
@@ -43,9 +44,8 @@ window.onload = () => {
         // Instantiate a loader
         const loader = new THREE.TextureLoader();
         // Load a resource
-        loader.load(// URL of texture
-            "textures/wood_texture_simple.png", // Function when resource is loaded
-            (texture) => {
+        loader.load("textures/wood_texture_simple.png", // URL of texture
+            (texture) => { // Function when resource is loaded
                 // Create objects using texture
                 const cube_geometry = new THREE.BoxGeometry(1, 1, 1);
                 const tex_material = new THREE.MeshBasicMaterial({
@@ -58,11 +58,9 @@ window.onload = () => {
                 // Call render here, because loading of texture can
                 // take lot of time
                 render();
-            }, // Function called when download progresses
-            (xhr) => {
+            }, (xhr) => { // Function called when download progresses
                 console.log((xhr.loaded / xhr.total * 100) + "% loaded");
-            }, // Function called when download errors
-            (xhr) => {
+            }, (xhr) => { // Function called when download errors
                 console.log("An error happened");
             });
 
