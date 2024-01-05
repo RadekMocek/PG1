@@ -1,6 +1,6 @@
 window.onload = () => {
 
-    let stats, camera, controls, scene, parent, obj, cube, box, renderer;
+    let stats, camera, controls, scene, renderer, obj_box, obj_pad;
 
     let dy = 0.01;
     let dx = 0.02;
@@ -9,6 +9,8 @@ window.onload = () => {
     animate();
 
     function init() {
+        // Texture loader
+        const loader = new THREE.TextureLoader();
 
         // Kamera
         camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
@@ -28,50 +30,38 @@ window.onload = () => {
 
         // Scene hierarchy
         scene = new THREE.Scene();
-        parent = new THREE.Object3D();
-        obj = new THREE.Object3D();
-        box = new THREE.Object3D();
-        parent.add(obj);
-        scene.add(parent);
 
         // Add helper object (bounding box)
         const box_geometry = new THREE.BoxGeometry(3.01, 3.01, 1.01);
         const box_mesh = new THREE.Mesh(box_geometry, null);
-        const bbox = new THREE.BoundingBoxHelper(box_mesh, 0xffffff);
-        bbox.update();
-        scene.add(bbox);
+        const bounding_box = new THREE.BoundingBoxHelper(box_mesh, 0xffffff);
+        bounding_box.update();
+        scene.add(bounding_box);
 
-        // Instantiate a loader
-        const loader = new THREE.TextureLoader();
-        // Load a resource
-        loader.load("textures/wood_texture_simple.png", // URL of texture
-            (texture) => { // Function when resource is loaded
-                // Create objects using texture
-                const cube_geometry = new THREE.BoxGeometry(1, 1, 1);
-                const tex_material = new THREE.MeshBasicMaterial({
-                    map: texture
-                });
+        // obj_box
+        loader.load("textures/wood_texture_simple.png", (texture) => {
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshBasicMaterial({map: texture});
+            obj_box = new THREE.Mesh(geometry, material);
+            scene.add(obj_box);
+        });
 
-                cube = new THREE.Mesh(cube_geometry, tex_material);
-                obj.add(cube);
-
-                // Call render here, because loading of texture can
-                // take lot of time
-                render();
-            }, (xhr) => { // Function called when download progresses
-                console.log((xhr.loaded / xhr.total * 100) + "% loaded");
-            }, (xhr) => { // Function called when download errors
-                console.log("An error happened");
-            });
+        // obj_pad
+        loader.load("textures/wood_texture_simple.png", (texture) => {
+            const geometry = new THREE.CylinderGeometry(.2, .2, 2.5, 10);
+            const material = new THREE.MeshBasicMaterial({map: texture});
+            obj_pad = new THREE.Mesh(geometry, material);
+            scene.add(obj_pad);
+        });
 
         // Display statistics of drawing to canvas
         stats = new Stats();
         stats.domElement.style.position = "absolute";
         stats.domElement.style.top = "0px";
-        stats.domElement.style.zIndex = 100;
+        stats.domElement.style.zIndex = "100";
         document.body.appendChild(stats.domElement);
 
-        // renderer
+        // Renderer
         renderer = new THREE.WebGLRenderer();
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -91,14 +81,14 @@ window.onload = () => {
     function animate() {
         requestAnimationFrame(animate);
         // Test of object animation
-        if (cube.position.y >= 1.0 || cube.position.y <= -1.0) {
+        if (obj_box.position.y >= 1.0 || obj_box.position.y <= -1.0) {
             dy = -dy;
         }
-        cube.position.y += dy;
-        if (obj.position.x >= 1.0 || obj.position.x <= -1.0) {
+        obj_box.position.y += dy;
+        if (obj_box.position.x >= 1.0 || obj_box.position.x <= -1.0) {
             dx = -dx;
         }
-        obj.position.x += dx;
+        obj_box.position.x += dx;
         // Update position of camera
         controls.update();
         // Render scene
