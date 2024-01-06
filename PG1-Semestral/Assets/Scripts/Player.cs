@@ -28,6 +28,6 @@ public class Player : MonoBehaviour
     {
         movementDirection = (isPlayer2) ? IH.MovementPlayer2 : IH.MovementPlayer1;
 
-        RB.velocity = Vector3.forward * movementDirection * movementSpeed;
+        RB.velocity = Vector3.forward * (movementDirection * movementSpeed);
     }
 }
