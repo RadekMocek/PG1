@@ -42,13 +42,15 @@ public class Player : MonoBehaviour
         if (inputMovementDirection != 0) lastMovementDirection = inputMovementDirection;
         RB.velocity = Vector3.forward * (lastMovementDirection * currentMovementSpeed);
 
-        // Akcelerace, zpomalení
+        // Akcelerace, zpomalenÃ­
         float thisFrameMovementAcceleration = Time.deltaTime * movementAcceleration;
-        if (inputMovementDirection != 0 && currentMovementSpeed < maxMovementSpeed) {
+        if (inputMovementDirection != 0 && currentMovementSpeed < maxMovementSpeed)
+        {
             currentMovementSpeed += thisFrameMovementAcceleration;
             if (currentMovementSpeed > maxMovementSpeed) currentMovementSpeed = maxMovementSpeed;
         }
-        else if (inputMovementDirection == 0 && currentMovementSpeed > 0) {
+        else if (inputMovementDirection == 0 && currentMovementSpeed > 0)
+        {
             currentMovementSpeed -= thisFrameMovementAcceleration;
             if (currentMovementSpeed < 0) currentMovementSpeed = 0;
         }

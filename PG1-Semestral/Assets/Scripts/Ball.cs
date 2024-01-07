@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    // Hodnoty tìchto promìnnıch jsou nastaveny v Unity Editoru
+    // Hodnoty tÄ›chto promÄ›nnÃ½ch jsou nastaveny v Unity Editoru
     [Header("References")]
     [SerializeField] private GameValuesSO GV;
     [SerializeField] private Transform wallCheckBackupUpTransform;
@@ -11,7 +11,7 @@ public class Ball : MonoBehaviour
     [Header("Configuration")]
     [SerializeField] private LayerMask wallLayer;
 
-    // Hodnoty tìchto promìnnıch jsou nastaveny v kódu
+    // Hodnoty tÄ›chto promÄ›nnÃ½ch jsou nastaveny v kÃ³du
     [HideInInspector] public GameManager GM;
     private Rigidbody RB;
 
@@ -32,32 +32,37 @@ public class Ball : MonoBehaviour
 
     private void Update()
     {
-        // Pokud se míèek z nìjakého dùvodu zpomalí, vrátit mu správnou rychlost
+        // Pokud se mÃ­Äek z nÄ›jakÃ©ho dÅ¯vodu zpomalÃ­, vrÃ¡tit mu sprÃ¡vnou rychlost
         if (RB.velocity.magnitude < movementSpeed) UpdateMovementDirection();
     }
 
-    // Kolize se zdí/pálkou
+    // Kolize se zdÃ­/pÃ¡lkou
     private void OnCollisionEnter(Collision collision)
     {
         GameObject collisionGO = collision.gameObject;
-        if (collisionGO.CompareTag("Wall")) {
-            // Odraz od zdi – pøevrátit vertikální rychlost
+        if (collisionGO.CompareTag("Wall"))
+        {
+            // Odraz od zdi â€“ pÅ™evrÃ¡tit vertikÃ¡lnÃ­ rychlost
             movementDirection.z *= -1;
         }
-        if (collisionGO.CompareTag("Paddle")) {
-            // Odraz od pálky
+        if (collisionGO.CompareTag("Paddle"))
+        {
+            // Odraz od pÃ¡lky
             Vector3 ballPosition = this.transform.position;
             Vector3 paddlePosition = collision.transform.position;
-            if (Mathf.Abs(ballPosition.x) - Mathf.Abs(paddlePosition.x) > 0) {
-                // Pøíliš pozdní odraz – míèek poletí za pálku
+            if (Mathf.Abs(ballPosition.x) - Mathf.Abs(paddlePosition.x) > 0)
+            {
+                // PÅ™Ã­liÅ¡ pozdnÃ­ odraz â€“ mÃ­Äek poletÃ­ za pÃ¡lku
                 movementDirection.z *= -1;
                 movementDirection.x = ballPosition.x / Mathf.Abs(ballPosition.x);
             }
-            else {
-                // Vèasnı odraz – novı smìr letu záleí na místì odrazu
-                movementDirection = (ballPosition - paddlePosition); // (cíl - start) -> smìr od pálky k míèku
-                if (Physics.CheckSphere(wallCheckBackupUpTransform.position, .1f, wallLayer) || Physics.CheckSphere(wallCheckBackupDownTransform.position, .1f, wallLayer)) {
-                    // Aby míèek nešel pøirazit ke zdi
+            else
+            {
+                // VÄasnÃ½ odraz â€“ novÃ½ smÄ›r letu zÃ¡leÅ¾Ã­ na mÃ­stÄ› odrazu
+                movementDirection = (ballPosition - paddlePosition); // (cÃ­l - start) -> smÄ›r od pÃ¡lky k mÃ­Äku
+                if (Physics.CheckSphere(wallCheckBackupUpTransform.position, .1f, wallLayer) || Physics.CheckSphere(wallCheckBackupDownTransform.position, .1f, wallLayer))
+                {
+                    // Aby mÃ­Äek neÅ¡el pÅ™irazit ke zdi
                     movementDirection.z *= -1;
                 }
             }
@@ -71,20 +76,20 @@ public class Ball : MonoBehaviour
         GM.Goal(other);
     }
 
-    // Pøesunout doprostøed høištì a vyletìt náhodnım smìrem
+    // PÅ™esunout doprostÅ™ed hÅ™iÅ¡tÄ› a vyletÄ›t nÃ¡hodnÃ½m smÄ›rem
     public void ResetPositionAndStartMoving()
     {
-        // Pøesunout doprostøed høištì
+        // PÅ™esunout doprostÅ™ed hÅ™iÅ¡tÄ›
         this.transform.position = Vector3.zero;
-        // Smìr pohybu takovı, aby se neblíil jedné z os
+        // SmÄ›r pohybu takovÃ½, aby se neblÃ­Å¾il jednÃ© z os
         int angleDegrees = Random.Range(30, 61) + Random.Range(0, 4) * 90;
         float angleRadians = angleDegrees * Mathf.Deg2Rad;
         movementDirection = new Vector3(Mathf.Cos(angleRadians), 0, Mathf.Sin(angleRadians));
-        // Uvést do pohybu
+        // UvÃ©st do pohybu
         UpdateMovementDirection();
     }
 
-    // Nastavit smìr pohybu odpovídající `movementDirection` ve správné rychlosti odpovídající `movementSpeed`
+    // Nastavit smÄ›r pohybu odpovÃ­dajÃ­cÃ­ `movementDirection` ve sprÃ¡vnÃ© rychlosti odpovÃ­dajÃ­cÃ­ `movementSpeed`
     private void UpdateMovementDirection()
     {
         RB.velocity = movementDirection.normalized * movementSpeed;
