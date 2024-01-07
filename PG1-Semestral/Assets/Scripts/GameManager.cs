@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.R)) {
-            ballScript.ResetPositionAndStartMoving();
+            ballScript.NewRound();
         }
     }
 
@@ -39,6 +39,6 @@ public class GameManager : MonoBehaviour
             player1Score++;
         }
         print($"Skóre: {player1Score}:{player2Score}");
-        ballScript.ResetPositionAndStartMoving();
+        ballScript.NewRound();
     }
 }

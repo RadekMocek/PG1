@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
@@ -17,6 +18,8 @@ public class Ball : MonoBehaviour
 
     private Vector3 movementDirection;
     private float movementSpeed;
+    private float movementSpeedIncrement;
+    private bool isMoving;
 
     private void Awake()
     {
@@ -25,15 +28,16 @@ public class Ball : MonoBehaviour
 
     private void Start()
     {
-        movementSpeed = GV.BallMovementSpeed;
+        movementSpeed = GV.BallInitialMovementSpeed;
+        movementSpeedIncrement = GV.BallMovementSpeedIncrement;
 
-        ResetPositionAndStartMoving();
+        NewRound();
     }
 
     private void Update()
-    {
+    {        
         // Pokud se míček z nějakého důvodu zpomalí, vrátit mu správnou rychlost
-        if (RB.velocity.magnitude < movementSpeed) UpdateMovementDirection();
+        if (isMoving && RB.velocity.magnitude < movementSpeed) UpdateMovementDirection();
     }
 
     // Kolize se zdí/pálkou
@@ -43,6 +47,8 @@ public class Ball : MonoBehaviour
         if (collisionGO.CompareTag("Wall")) {
             // Odraz od zdi – převrátit vertikální rychlost
             movementDirection.z *= -1;
+            // Pozměnit směr pokud míček lítá příliš vertikálně (a dlouho by trvalo než doletí k pálce)
+            if (Mathf.Abs(movementDirection.normalized.x) < 0.3f) movementDirection.x = Mathf.Sign(movementDirection.x);
         }
         if (collisionGO.CompareTag("Paddle")) {
             // Odraz od pálky
@@ -51,16 +57,16 @@ public class Ball : MonoBehaviour
             if (Mathf.Abs(ballPosition.x) - Mathf.Abs(paddlePosition.x) > 0) {
                 // Příliš pozdní odraz – míček poletí za pálku
                 movementDirection.z *= -1;
-                movementDirection.x = ballPosition.x / Mathf.Abs(ballPosition.x);
+                movementDirection.x = Mathf.Sign(movementDirection.x);
             }
             else {
                 // Včasný odraz – nový směr letu záleží na místě odrazu
                 movementDirection = (ballPosition - paddlePosition); // (cíl - start) -> směr od pálky k míčku
-                if (Physics.CheckSphere(wallCheckBackupUpTransform.position, .1f, wallLayer) || Physics.CheckSphere(wallCheckBackupDownTransform.position, .1f, wallLayer))
-                {
+                if (Physics.CheckSphere(wallCheckBackupUpTransform.position, .1f, wallLayer) || Physics.CheckSphere(wallCheckBackupDownTransform.position, .1f, wallLayer)) {
                     // Aby míček nešel přirazit ke zdi
                     movementDirection.z *= -1;
                 }
+                movementSpeed += movementSpeedIncrement; // Po odrazu pálkou míček zrychlit
             }
         }
         UpdateMovementDirection();
@@ -73,16 +79,33 @@ public class Ball : MonoBehaviour
     }
 
     // Přesunout doprostřed hřiště a vyletět náhodným směrem
-    public void ResetPositionAndStartMoving()
+    public void NewRound()
     {
+        // Zastavit
+        isMoving = false;
+        RB.velocity = Vector3.zero;
         // Přesunout doprostřed hřiště
         this.transform.position = Vector3.zero;
         // Směr pohybu takový, aby se neblížil jedné z os
         int angleDegrees = Random.Range(30, 61) + Random.Range(0, 4) * 90;
         float angleRadians = angleDegrees * Mathf.Deg2Rad;
         movementDirection = new Vector3(Mathf.Cos(angleRadians), 0, Mathf.Sin(angleRadians));
+        // Odpočet a následné uvedení do pohybu
+        StopAllCoroutines();
+        StartCoroutine(StartMovingAfterCountDown());
+    }
+
+    private IEnumerator StartMovingAfterCountDown()
+    {
+        // 3 2 1
+        for (int i = 3; i > 0; i--) {
+            print(i);
+            yield return new WaitForSeconds(.5f);
+        }
+        print("Start");
         // Uvést do pohybu
         UpdateMovementDirection();
+        isMoving = true;
     }
 
     // Nastavit směr pohybu odpovídající `movementDirection` ve správné rychlosti odpovídající `movementSpeed`

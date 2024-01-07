@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <PlayerMaxMovementSpeed>k__BackingField: 6.5
   <PlayerMovementAcceleration>k__BackingField: 23
-  <BallMovementSpeed>k__BackingField: 8
+  <BallInitialMovementSpeed>k__BackingField: 8
+  <BallMovementSpeedIncrement>k__BackingField: 0.11
