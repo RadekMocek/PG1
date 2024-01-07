@@ -25,20 +25,17 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
+        if (Input.GetKeyDown(KeyCode.R)) {
             ballScript.ResetPositionAndStartMoving();
         }
     }
 
     public void Goal(Collider goal)
     {
-        if (goal.CompareTag("Goal1"))
-        {
+        if (goal.CompareTag("Goal1")) {
             player2Score++;
         }
-        else
-        {
+        else {
             player1Score++;
         }
         print($"Skóre: {player1Score}:{player2Score}");

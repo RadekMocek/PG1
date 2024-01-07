@@ -40,24 +40,20 @@ public class Ball : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         GameObject collisionGO = collision.gameObject;
-        if (collisionGO.CompareTag("Wall"))
-        {
+        if (collisionGO.CompareTag("Wall")) {
             // Odraz od zdi – převrátit vertikální rychlost
             movementDirection.z *= -1;
         }
-        if (collisionGO.CompareTag("Paddle"))
-        {
+        if (collisionGO.CompareTag("Paddle")) {
             // Odraz od pálky
             Vector3 ballPosition = this.transform.position;
             Vector3 paddlePosition = collision.transform.position;
-            if (Mathf.Abs(ballPosition.x) - Mathf.Abs(paddlePosition.x) > 0)
-            {
+            if (Mathf.Abs(ballPosition.x) - Mathf.Abs(paddlePosition.x) > 0) {
                 // Příliš pozdní odraz – míček poletí za pálku
                 movementDirection.z *= -1;
                 movementDirection.x = ballPosition.x / Mathf.Abs(ballPosition.x);
             }
-            else
-            {
+            else {
                 // Včasný odraz – nový směr letu záleží na místě odrazu
                 movementDirection = (ballPosition - paddlePosition); // (cíl - start) -> směr od pálky k míčku
                 if (Physics.CheckSphere(wallCheckBackupUpTransform.position, .1f, wallLayer) || Physics.CheckSphere(wallCheckBackupDownTransform.position, .1f, wallLayer))
