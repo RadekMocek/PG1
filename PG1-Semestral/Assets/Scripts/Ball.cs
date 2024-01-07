@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Ball : MonoBehaviour
 {
@@ -43,7 +44,10 @@ public class Ball : MonoBehaviour
     public void ResetPositionAndStartMoving()
     {
         this.transform.position = Vector3.zero;
-        movementDirection = new Vector3(1, 0, 1);
+
+        int angleDegrees = Random.Range(30, 61) + Random.Range(0, 4) * 90;
+        float angleRadians = angleDegrees * Mathf.Deg2Rad;
+        movementDirection = new Vector3(Mathf.Cos(angleRadians), 0, Mathf.Sin(angleRadians)).normalized;
         UpdateMovementDirection();
     }
 
