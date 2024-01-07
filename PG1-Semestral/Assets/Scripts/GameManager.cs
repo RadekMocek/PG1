@@ -23,6 +23,13 @@ public class GameManager : MonoBehaviour
         player2Score = 0;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R)) {
+            ballScript.ResetPositionAndStartMoving();
+        }
+    }
+
     public void Goal(Collider goal)
     {
         if (goal.CompareTag("Goal1")) {

@@ -52,6 +52,5 @@ public class Player : MonoBehaviour
             currentMovementSpeed -= thisFrameMovementAcceleration;
             if (currentMovementSpeed < 0) currentMovementSpeed = 0;
         }
-        print(currentMovementSpeed);
     }
 }
