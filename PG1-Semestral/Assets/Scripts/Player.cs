@@ -11,8 +11,11 @@ public class Player : MonoBehaviour
 
     private Rigidbody RB;
 
-    private int movementDirection;
-    private float movementSpeed;
+    private int inputMovementDirection;
+    private int lastMovementDirection;
+    private float maxMovementSpeed;
+    private float currentMovementSpeed;
+    private float movementAcceleration;
 
     private void Awake()
     {
@@ -21,13 +24,34 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        movementSpeed = GV.PlayerMovementSpeed;
+        maxMovementSpeed = GV.PlayerMaxMovementSpeed;
+        currentMovementSpeed = 0;
+
+        movementAcceleration = GV.PlayerMovementAcceleration;
     }
 
     private void Update()
     {
-        movementDirection = (isPlayer2) ? IH.MovementPlayer2 : IH.MovementPlayer1;
+        Movement();
+    }
 
-        RB.velocity = Vector3.forward * (movementDirection * movementSpeed);
+    private void Movement()
+    {
+        inputMovementDirection = (isPlayer2) ? IH.MovementPlayer2 : IH.MovementPlayer1;
+
+        if (inputMovementDirection != 0) lastMovementDirection = inputMovementDirection;
+        RB.velocity = Vector3.forward * (lastMovementDirection * currentMovementSpeed);
+
+        // Akcelerace, zpomalení
+        float thisFrameMovementAcceleration = Time.deltaTime * movementAcceleration;
+        if (inputMovementDirection != 0 && currentMovementSpeed < maxMovementSpeed) {
+            currentMovementSpeed += thisFrameMovementAcceleration;
+            if (currentMovementSpeed > maxMovementSpeed) currentMovementSpeed = maxMovementSpeed;
+        }
+        else if (inputMovementDirection == 0 && currentMovementSpeed > 0) {
+            currentMovementSpeed -= thisFrameMovementAcceleration;
+            if (currentMovementSpeed < 0) currentMovementSpeed = 0;
+        }
+        print(currentMovementSpeed);
     }
 }
