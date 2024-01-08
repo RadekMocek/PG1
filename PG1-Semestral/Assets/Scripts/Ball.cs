@@ -17,6 +17,7 @@ public class Ball : MonoBehaviour
     private Rigidbody RB;
 
     private Vector3 movementDirection;
+    private float initialMovementSpeed;
     private float movementSpeed;
     private float movementSpeedIncrement;
     private bool isMoving;
@@ -28,7 +29,8 @@ public class Ball : MonoBehaviour
 
     private void Start()
     {
-        movementSpeed = GV.BallInitialMovementSpeed;
+        initialMovementSpeed = GV.BallInitialMovementSpeed;
+        movementSpeed = initialMovementSpeed;
         movementSpeedIncrement = GV.BallMovementSpeedIncrement;
 
         NewRound();
@@ -88,6 +90,8 @@ public class Ball : MonoBehaviour
         RB.velocity = Vector3.zero;
         // Přesunout doprostřed hřiště
         this.transform.position = Vector3.zero;
+        // Resetovat rychlost
+        movementSpeed = initialMovementSpeed;
         // Směr pohybu takový, aby se neblížil jedné z os
         int angleDegrees = Random.Range(30, 61) + Random.Range(0, 4) * 90;
         float angleRadians = angleDegrees * Mathf.Deg2Rad;
