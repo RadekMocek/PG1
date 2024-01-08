@@ -2,12 +2,14 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private GameValuesSO GV;
-    [SerializeField] private InputHandler IH;
-
+    // Hodnoty těchto proměnných jsou nastaveny v Unity Editoru
     [Header("Configuration")]
     [SerializeField] private bool isPlayer2;
+    [SerializeField] private bool isAI;
+
+    // Hodnoty těchto proměnných jsou nastaveny v kódu nebo ve ScriptableObjektu (v editoru)
+    [HideInInspector] public GameValuesSO GV;
+    [HideInInspector] public InputHandler IH;
 
     private Rigidbody RB;
 
@@ -16,6 +18,8 @@ public class Player : MonoBehaviour
     private float maxMovementSpeed;
     private float currentMovementSpeed;
     private float movementAcceleration;
+
+    [HideInInspector] public Transform ballTransform;
 
     private void Awake()
     {
@@ -37,7 +41,7 @@ public class Player : MonoBehaviour
 
     private void Movement()
     {
-        inputMovementDirection = (isPlayer2) ? IH.MovementPlayer2 : IH.MovementPlayer1;
+        inputMovementDirection = (isAI) ? AIMovement() : KeyboardMovement();
 
         if (inputMovementDirection != 0) lastMovementDirection = inputMovementDirection;
         RB.velocity = Vector3.forward * (lastMovementDirection * currentMovementSpeed);
@@ -45,12 +49,27 @@ public class Player : MonoBehaviour
         // Akcelerace, zpomalení
         float thisFrameMovementAcceleration = Time.deltaTime * movementAcceleration;
         if (inputMovementDirection != 0 && currentMovementSpeed < maxMovementSpeed) {
+            // Postupné zrychlování, dokud se nedostaneme na `maxMovementSpeed`
             currentMovementSpeed += thisFrameMovementAcceleration;
             if (currentMovementSpeed > maxMovementSpeed) currentMovementSpeed = maxMovementSpeed;
         }
         else if (inputMovementDirection == 0 && currentMovementSpeed > 0) {
+            // Postupné zpomalování, dokud se nedostaneme na nulu
             currentMovementSpeed -= thisFrameMovementAcceleration;
             if (currentMovementSpeed < 0) currentMovementSpeed = 0;
         }
+    }
+
+    private int KeyboardMovement() => (isPlayer2) ? IH.MovementPlayer2 : IH.MovementPlayer1;
+
+    private float thisZ, ballZ;
+    private readonly float AIZThreshold = 0.5f;
+    private int AIMovement()
+    {
+        thisZ = this.transform.position.z;
+        ballZ = ballTransform.position.z;
+        if (ballZ - thisZ > AIZThreshold) return 1;
+        else if (thisZ - ballZ > AIZThreshold) return -1;
+        return 0;
     }
 }

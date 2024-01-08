@@ -5,15 +5,15 @@ public class Ball : MonoBehaviour
 {
     // Hodnoty těchto proměnných jsou nastaveny v Unity Editoru
     [Header("References")]
-    [SerializeField] private GameValuesSO GV;
     [SerializeField] private Transform wallCheckBackupUpTransform;
     [SerializeField] private Transform wallCheckBackupDownTransform;
 
     [Header("Configuration")]
     [SerializeField] private LayerMask wallLayer;
 
-    // Hodnoty těchto proměnných jsou nastaveny v kódu
+    // Hodnoty těchto proměnných jsou nastaveny v kódu nebo ve ScriptableObjektu (v editoru)
     [HideInInspector] public GameManager GM;
+    [HideInInspector] public GameValuesSO GV;
     private Rigidbody RB;
 
     private Vector3 movementDirection;
@@ -41,9 +41,11 @@ public class Ball : MonoBehaviour
     }
 
     // Kolize se zdí/pálkou
+    private GameObject collisionGO;
+    private Vector3 ballPosition, paddlePosition;
     private void OnCollisionEnter(Collision collision)
     {
-        GameObject collisionGO = collision.gameObject;
+        collisionGO = collision.gameObject;
         if (collisionGO.CompareTag("Wall")) {
             // Odraz od zdi – převrátit vertikální rychlost
             movementDirection.z *= -1;
@@ -52,8 +54,8 @@ public class Ball : MonoBehaviour
         }
         if (collisionGO.CompareTag("Paddle")) {
             // Odraz od pálky
-            Vector3 ballPosition = this.transform.position;
-            Vector3 paddlePosition = collision.transform.position;
+            ballPosition = this.transform.position;
+            paddlePosition = collision.transform.position;
             if (Mathf.Abs(ballPosition.x) - Mathf.Abs(paddlePosition.x) > 0) {
                 // Příliš pozdní odraz – míček poletí za pálku
                 movementDirection.z *= -1;
@@ -89,7 +91,7 @@ public class Ball : MonoBehaviour
         // Směr pohybu takový, aby se neblížil jedné z os
         int angleDegrees = Random.Range(30, 61) + Random.Range(0, 4) * 90;
         float angleRadians = angleDegrees * Mathf.Deg2Rad;
-        movementDirection = new Vector3(Mathf.Cos(angleRadians), 0, Mathf.Sin(angleRadians));
+        movementDirection.Set(Mathf.Cos(angleRadians), 0, Mathf.Sin(angleRadians));
         // Odpočet a následné uvedení do pohybu
         StopAllCoroutines();
         StartCoroutine(StartMovingAfterCountDown());
