@@ -31,7 +31,6 @@ public class HUDManager : MonoBehaviour
         bool isPlayer1AI = group1.ActiveToggles().FirstOrDefault().name[0] == '1';
         bool isPlayer2AI = group2.ActiveToggles().FirstOrDefault().name[0] == '1';
         GM.StartGame(isPlayer1AI, isPlayer2AI);
-
         mainMenuGO.SetActive(false);
     }
 

@@ -72,12 +72,14 @@ public class Ball : MonoBehaviour
                 movementSpeed += movementSpeedIncrement; // Po odrazu pálkou míček zrychlit
             }
         }
+        SoundManager.Instance.PlaySound("Bounce");
         UpdateMovementDirection();
     }
 
     // "Kolize" s "brankou"
     private void OnTriggerEnter(Collider other)
     {
+        SoundManager.Instance.PlaySound("Goal");
         GM.Goal(other);
     }
 
@@ -109,9 +111,11 @@ public class Ball : MonoBehaviour
         // 3 2 1
         for (int i = 3; i > 0; i--) {
             HUD.ShowCountdown(i);
+            SoundManager.Instance.PlaySound("321");
             yield return new WaitForSeconds(1);
         }
         HUD.HideCountdown();
+        SoundManager.Instance.PlaySound("Start");
         // Uvést do pohybu
         UpdateMovementDirection();
         isMoving = true;
