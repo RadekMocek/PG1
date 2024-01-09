@@ -5,7 +5,7 @@ public class Player : MonoBehaviour
     // Hodnoty těchto proměnných jsou nastaveny v Unity Editoru
     [Header("Configuration")]
     [SerializeField] private bool isPlayer2;
-    [SerializeField] private bool isAI;
+    public bool isAI;
 
     // Hodnoty těchto proměnných jsou nastaveny v kódu nebo ve ScriptableObjektu (v editoru)
     [HideInInspector] public GameValuesSO GV;

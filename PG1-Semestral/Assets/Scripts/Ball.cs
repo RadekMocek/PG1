@@ -33,7 +33,7 @@ public class Ball : MonoBehaviour
         movementSpeed = initialMovementSpeed;
         movementSpeedIncrement = GV.BallMovementSpeedIncrement;
 
-        NewRound();
+        //NewRound();
     }
 
     private void Update()
@@ -98,10 +98,10 @@ public class Ball : MonoBehaviour
         movementDirection.Set(Mathf.Cos(angleRadians), 0, Mathf.Sin(angleRadians));
         // Odpočet a následné uvedení do pohybu
         StopAllCoroutines();
-        StartCoroutine(StartMovingAfterCountDown());
+        StartCoroutine(StartMovingAfterCountdownCoroutine());
     }
 
-    private IEnumerator StartMovingAfterCountDown()
+    private IEnumerator StartMovingAfterCountdownCoroutine()
     {
         // 3 2 1
         for (int i = 3; i > 0; i--) {
