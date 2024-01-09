@@ -21,11 +21,14 @@ public class GameManager : MonoBehaviour
     private int player1Score;
     private int player2Score;
 
+    private bool isMainMenu;
+
     private void Awake()
     {
         ballScript = ballGO.GetComponent<Ball>();
         ballScript.GM = this;
         ballScript.GV = GV;
+        ballScript.HUD = HUD;
 
         HUD.GM = this;
 
@@ -40,23 +43,26 @@ public class GameManager : MonoBehaviour
         player2Script.IH = IH;
     }
 
-    private void Update()
+    private void Start()
     {
-        if (Input.GetKeyDown(KeyCode.R)) {
-            ballScript.NewRound();
-        }
+        isMainMenu = true;
     }
 
     public void Goal(Collider goal)
     {
+        if (isMainMenu) {
+            ballScript.StopAndCenter();
+            return;
+        }
+        // Po gólu přičíst skóre patřičnému hráči a začít nové kolo; skóre zobrazit v HUD
         if (goal.CompareTag("Goal1")) {
             player2Score++;
         }
         else {
             player1Score++;
         }
-        print($"Skóre: {player1Score}:{player2Score}");
         ballScript.NewRound();
+        HUD.ShowScore(player1Score, player2Score);
     }
 
     // Po stisknutí tlačítka "Play" v hlavním menu
@@ -69,6 +75,7 @@ public class GameManager : MonoBehaviour
         player1Script.isAI = isPlayer1AI;
         player2Script.isAI = isPlayer2AI;
         //
+        isMainMenu = false;
         StartCoroutine(StartGameCoroutine());
     }
 
@@ -82,5 +89,28 @@ public class GameManager : MonoBehaviour
         }
         // Začít první kolo
         ballScript.NewRound();
+        HUD.ShowScore(0, 0);
+    }
+
+    // Po stisknutí tlačítka "Reset the ball"
+    public void ResetBall() => ballScript.NewRound();
+
+    // Po stisknutí tlačítka "Back to menu"
+    public void BackToMainMenu() => StartCoroutine(BackToMainMenuCoroutine());
+
+    private IEnumerator BackToMainMenuCoroutine()
+    {
+        isMainMenu = true;
+        // Kamera do původní pozice
+        var target = Quaternion.Euler(-3, 0, 0);
+        while (cameraTransform.eulerAngles.x > 1) {
+            cameraTransform.rotation = Quaternion.Slerp(cameraTransform.rotation, target, 1 * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+        ballScript.StopAndCenter();
+        player1Script.ResetPosition();
+        player2Script.ResetPosition();
+        HUD.ShowMainMenu();
     }
 }

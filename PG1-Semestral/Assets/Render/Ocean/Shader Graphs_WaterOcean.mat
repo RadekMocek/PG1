@@ -65,7 +65,7 @@ Material:
     - _Wave_Scale: 6
     - _Wave_Speed: 6
     - _Wave_Strength: 0.8
-    - _Wave_Tile: 0.6
+    - _Wave_Tile: 0.3
     m_Colors:
     - _Vector2: {r: 0.63, g: 0.71, b: 0, a: 0}
     - _Water_A: {r: 0, g: 0.35660362, b: 0.4245283, a: 0}

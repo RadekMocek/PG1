@@ -14,6 +14,7 @@ public class Ball : MonoBehaviour
     // Hodnoty těchto proměnných jsou nastaveny v kódu nebo ve ScriptableObjektu (v editoru)
     [HideInInspector] public GameManager GM;
     [HideInInspector] public GameValuesSO GV;
+    [HideInInspector] public HUDManager HUD;
     private Rigidbody RB;
 
     private Vector3 movementDirection;
@@ -32,8 +33,6 @@ public class Ball : MonoBehaviour
         initialMovementSpeed = GV.BallInitialMovementSpeed;
         movementSpeed = initialMovementSpeed;
         movementSpeedIncrement = GV.BallMovementSpeedIncrement;
-
-        //NewRound();
     }
 
     private void Update()
@@ -82,14 +81,18 @@ public class Ball : MonoBehaviour
         GM.Goal(other);
     }
 
+    // Zastavit a Přesunout doprostřed hřiště
+    public void StopAndCenter()
+    {
+        isMoving = false;
+        RB.velocity = Vector3.zero;
+        this.transform.position = Vector3.zero;
+    }
+
     // Přesunout doprostřed hřiště a vyletět náhodným směrem
     public void NewRound()
     {
-        // Zastavit
-        isMoving = false;
-        RB.velocity = Vector3.zero;
-        // Přesunout doprostřed hřiště
-        this.transform.position = Vector3.zero;
+        StopAndCenter();
         // Resetovat rychlost
         movementSpeed = initialMovementSpeed;
         // Směr pohybu takový, aby se neblížil jedné z os
@@ -105,10 +108,10 @@ public class Ball : MonoBehaviour
     {
         // 3 2 1
         for (int i = 3; i > 0; i--) {
-            print(i);
-            yield return new WaitForSeconds(.5f);
+            HUD.ShowCountdown(i);
+            yield return new WaitForSeconds(1);
         }
-        print("Start");
+        HUD.HideCountdown();
         // Uvést do pohybu
         UpdateMovementDirection();
         isMoving = true;
@@ -120,9 +123,11 @@ public class Ball : MonoBehaviour
         RB.velocity = movementDirection.normalized * movementSpeed;
     }
 
+    /*
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(wallCheckBackupUpTransform.position, 0.1f);
         Gizmos.DrawWireSphere(wallCheckBackupDownTransform.position, 0.1f);
     }
+    /**/
 }

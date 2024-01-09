@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
 
     [HideInInspector] public Transform ballTransform;
 
+    private Vector3 initialPosition;
+
     private void Awake()
     {
         RB = GetComponent<Rigidbody>();
@@ -32,6 +34,8 @@ public class Player : MonoBehaviour
         currentMovementSpeed = 0;
 
         movementAcceleration = GV.PlayerMovementAcceleration;
+
+        initialPosition = this.transform.position;
     }
 
     private void Update()
@@ -72,4 +76,6 @@ public class Player : MonoBehaviour
         else if (thisZ - ballZ > AIZThreshold) return -1;
         return 0;
     }
+
+    public void ResetPosition() => this.transform.position = initialPosition;
 }
