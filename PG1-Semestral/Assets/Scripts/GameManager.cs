@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour
             cameraTransform.rotation = Quaternion.Slerp(cameraTransform.rotation, target, 1 * Time.deltaTime);
             yield return new WaitForEndOfFrame();
         }
-
+        // Pálky a míček do původní pozice, zobrazit menu
         ballScript.StopAndCenter();
         player1Script.ResetPosition();
         player2Script.ResetPosition();

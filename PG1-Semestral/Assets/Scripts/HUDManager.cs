@@ -18,16 +18,22 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private GameObject countdownGO;
     [SerializeField] private TMP_Text countdownText;
 
+    [Header("Settings")]
+    [SerializeField] private GameObject soundManagerGO;
+    [SerializeField] private GameObject waterGO;
+
     [HideInInspector] public GameManager GM;
 
     private void Start()
     {
+        // Hra začíná v hlavním menu
         mainMenuGO.SetActive(true);
         inGameGO.SetActive(false);
     }
 
     public void OnClickPlay()
     {
+        // Předat GM nastavení člověk/AI a skrýt menu UI
         bool isPlayer1AI = group1.ActiveToggles().FirstOrDefault().name[0] == '1';
         bool isPlayer2AI = group2.ActiveToggles().FirstOrDefault().name[0] == '1';
         GM.StartGame(isPlayer1AI, isPlayer2AI);
@@ -43,6 +49,10 @@ public class HUDManager : MonoBehaviour
         inGameGO.SetActive(false);
         GM.BackToMainMenu();
     }
+
+    public void OnClickSettingsSounds() => soundManagerGO.SetActive(!soundManagerGO.activeSelf);
+
+    public void OnClickSettingsWater() => waterGO.SetActive(!waterGO.activeSelf);
 
     public void ShowScore(int score1, int score2)
     {

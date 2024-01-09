@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    // Static instance, aby mohli být zvuky předávány odkudkoliv bez předávání reference
     public static SoundManager Instance { get; private set; }
 
     [Header("Audio Sources")]
@@ -15,7 +16,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip countdown321AC;
     [SerializeField] private AudioClip countdownStartAC;
 
-    private Dictionary<string, AudioClip> sounds;
+    private Dictionary<string, AudioClip> sounds; // Zvuky a jejich názvy
 
     private void Awake()
     {
@@ -34,6 +35,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySound(string soundName)
     {
+        if (!this.isActiveAndEnabled) return;
         soundAS.PlayOneShot(sounds[soundName]);
     }
     
